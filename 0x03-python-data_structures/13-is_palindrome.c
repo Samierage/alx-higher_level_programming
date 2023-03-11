@@ -1,26 +1,69 @@
-#include <Python.h>
-#include <stdio.h>
-#include <object.h>
-#include <listobject.h>
+#include "lists.h"
 
 /**
- * print_python_list_info - prints some basic info about Python lists.
- * @p: python object.
+ * reverse_listint - reverses a linked list
+ * @head: pointer to the first node in the list
+ * Return: pointer to the first node in the new list
  */
-void print_python_list_info(PyObject *p)
+void reverse_listint(listint_t **head)
 {
-	int size;
-	int allocated;
-	int i;
+	listint_t *prev = NULL;
+	listint_t *current = *head;
+	listint_t *next = NULL;
 
-	size = Py_SIZE(p);
-	allocated = ((PyListObject *)p)->allocated;
-	printf("[*] Size of the Python List = %d\n", size);
-	printf("[*] Allocated = %d\n", allocated);
-
-	for (i = 0; i < size; i++)
+	while (current)
 	{
-		printf("Element %d: ", i);
-		printf("%s\n", ((PyList_GetItem(p, i))->ob_type)->tp_name);
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
 	}
+
+	*head = prev;
+}
+
+/**
+ * is_palindrome - checks if a linked list is a palindrome
+ * @head: double pointer to the linked list
+ * Return: 1 if it is, 0 if not
+ */
+int is_palindrome(listint_t **head)
+{
+	listint_t *slow = *head, *fast = *head, *temp = *head, *dup = NULL;
+
+	if (*head == NULL || (*head)->next == NULL)
+		return (1);
+
+	while (1)
+	{
+		fast = fast->next->next;
+		if (!fast)
+		{
+			dup = slow->next;
+			break;
+
+		}
+		if (!fast->next)
+		{
+			dup = slow->next->next;
+			break;
+		}
+		slow = slow->next;
+	}
+
+	reverse_listint(&dup);
+	while (dup && temp)
+	{
+		if (temp->n == dup->n)
+		{
+			dup = dup->next;
+			temp = temp->next;
+		}
+		else
+			return (0);
+	}
+
+	if (!dup)
+		return (1);
+	return (0);
 }
