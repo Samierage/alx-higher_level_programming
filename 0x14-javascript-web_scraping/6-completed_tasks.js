@@ -22,5 +22,5 @@ request(url, function (err, response, body) {
     console.log(completed);
   } else {
     console.log('An error occured. Status code: ' + response.statusCode);
-  }
-});
+  });
+}
